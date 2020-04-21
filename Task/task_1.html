@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>How to test if an element is in the viewport with vanilla JavaScript | Go Make Things</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+	<link rel="icon" href="favicon.ico">
+	<link rel="stylesheet" href="main.css">
+</head>
+<body>
+	<div class="wrapper">
+		<header class="header">
+			<a href="" class="main-page"><img src="favicon.ico" width="19px" height="19px">Go Make Things</a>
+			<nav class="navigation">
+				<ul>
+					<li><a href="">About</a></li>
+					<li><a href="" class="special-a">Daily Tips</a></li>
+					<li><a href="">Learn JS</a></li>
+				</ul>
+			</nav>
+		</header>
+		<main class="main">
+			<article>
+				<time datetime="2017-08-10" class="date">August 10, 2017</time>
+				<h1>How to test if an element is in the viewport with vanilla JavaScript</h1>
+				<p>Today, I want to show you how to write a small vanilla JS helper function to check if an element is in the viewport.</p>
+				<p>“In the viewport” means in the visible part of the screen, as opposed to above or below the visible area. 
+				This is useful when doing things like creating lazy loading scripts.</p>
+				<section id="sec1">
+					<h2>Getting the bounding coordinates <a href="#sec1" class="anchor">#</a></h2>
+					<p>At the heart of our function is <code class="red-code">Element.getBoundingClientRect()</code>, which provides an element’s position within the viewport. 
+					It returns an object with an element’s height and width, as well as it’s distance from the top, bottom, left, and right of the viewport.</p>
+					<code class="big-code">
+						<span class="comment">// Get the H1 heading</span><br>
+						<span class="blue-span">var</span> h1 <span class="symbol-span">=</span> <span class="blue-span">document</span><span class="comment">.</span>querySelector<span class="comment">(</span><span class="green-span">'h1'</span><span class="comment">);</span><br>
+							<br>
+						<span class="comment">// Get it's position in the viewport</span><br>
+						<span class="blue-span">var</span> bounding <span class="symbol-span">=</span> h1<span class="comment">.</span>getBoundingClientRect<span class="comment">();</span><br>
+							<br>
+						<span class="comment">// Log the results</span><br>
+						console<span class="comment">.</span>log<span class="comment">(</span>bounding<span class="comment">);</span><br>
+						<span class="comment">// {<br>
+						// 	height: 118,<br>
+						// 	width: 591.359375,<br>
+						// 	top: 137,<br>
+						// 	bottom: 255,<br>
+						// 	left: 40.3125,<br>
+						// 	right: 631.671875<br>
+						// }
+						</span>
+					</code>
+				</section>
+				<section id="sec2">
+					<h2>Determining if the element is in the viewport <a href="#sec2" class="anchor">#</a></h2>
+					<p>If an element is in the viewport, it’s position from the <code class="red-code">top</code> and <code class="red-code">left</code> 
+					will always be greater than or equal to <code class="red-code">0</code>. 
+					It’s distance from the <code class="red-code">right</code> will be less than or equal to the total width of the viewport,
+					and it’s distance from the <code class="red-code">bottom</code> 
+					will be less than or equal to the height of the viewport.</p>
+					<p>There are two ways to check the viewport’s width. Some browsers support <code class="red-code">window.innerWidth</code>,
+					other’s support <code class="red-code">document.documentElement.clientWidth</code>, and some support both. 
+					We can try one and fallback to the other by doing something like this:</p>
+					<code class="big-code"><span class="comment">(</span><span class="blue-span">window</span><span class="comment">.</span>innerWidth <span class="symbol-span">||</span> <span class="blue-span">document</span><span class="comment">.</span>documentElement<span class="comment">.</span>clientWidth<span class="comment">)</span></code>
+					<p>Similarly, to get the viewport height, we can use <code class="red-code">window.innerHeight</code> in some browsers and 
+					<code class="red-code">document.documentElement.clientHeight</code>
+					in others. Like with width, we can try one and fallback to the other:</p>
+					<code class="big-code"><span class="comment">(</span><span class="blue-span">window</span><span class="comment">.</span>innerHeight <span class="symbol-span">||</span> <span class="blue-span">document</span><span class="comment">.</span>documentElement<span class="comment">.</span>clientHeight<span class="comment">)</span></code>
+				</section>
+				<section id="sec3">
+					<h2>Putting it all together <a href="#sec3" class="anchor">#</a></h2>
+					<p>Let’s use that heading from earlier as an example.</p>
+					<code class="big-code">
+						<span class="comment">// Get the H1 heading</span><br>
+						<span class="blue-span">var</span> h1 <span class="symbol-span">=</span> <span class="blue-span">document</span><span class="comment">.</span>querySelector<span class="comment">(</span><span class="green-span">'h1'</span><span class="comment">);</span><br>
+							<br>
+						<span class="comment">// Get it's position in the viewport</span><br>
+						<span class="blue-span">var</span> bounding <span class="symbol-span">=</span> h1<span class="comment">.</span>getBoundingClientRect<span class="comment">();</span><br>
+							<br>
+						<span class="comment">// Log the results</span><br>
+						console<span class="comment">.</span>log<span class="comment">(</span>bounding<span class="comment">);</span><br>
+						<span class="comment">// {<br>
+						// 	height: 118,<br>
+						// 	width: 591.359375,<br>
+						// 	top: 137,<br>
+						// 	bottom: 255,<br>
+						// 	left: 40.3125,<br>
+						// 	right: 631.671875<br>
+						// }
+						</span>
+					</code>
+					<p>We can check if the element is in the viewport like this.</p>
+					<code class="big-code">
+						<span class="blue-span">if</span> <span class="comment">(</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;bounding<span class="comment">.</span>top <span class="symbol-span">>=</span> <span class="red-code2">0</span> <span class="symbol-span">&&</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;bounding<span class="comment">.</span>left <span class="symbol-span">>=</span> <span class="red-code2">0</span> <span class="symbol-span">&&</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;bounding<span class="comment">.</span>right <span class="symbol-span"><=</span> <span class="comment">(</span><span class="blue-span">window</span><span class="comment">.</span>innerWidth <span class="symbol-span">||</span> <span class="blue-span">document</span><span class="comment">.</span>documentElement<span class="comment">.</span>clientWidth<span class="comment">)</span> <span class="symbol-span">&&</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;bounding<span class="comment">.</span>bottom <span class="symbol-span"><=</span> <span class="comment">(</span><span class="blue-span">window</span><span class="comment">.</span>innerHeight <span class="symbol-span">||</span> <span class="blue-span">document</span><span class="comment">.</span>documentElement<span class="comment">.</span>clientHeight<span class="comment">)</span><br>
+						<span class="comment">) {</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;console<span class="comment">.</span>log<span class="comment">(</span><span class="green-span">'In the viewport!'</span><span class="comment">);</span><br>
+						<span class="comment">}</span> <span class="blue-span">else</span> <span class="comment">{</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;console<span class="comment">.</span>log<span class="comment">(</span><span class="green-span">'Not in the viewport... whomp whomp'</span><span class="comment">);</span><br>
+						<span class="comment">}</span>
+					</code>
+					<p>That’s super clunky to have to write out each time though, so this kind of thing deserves it’s own helper function.</p>
+					<code class="big-code">
+						<span class="blue-span">var</span> isInViewport <span class="symbol-span">=</span> <span class="blue-span">function</span> <span class="comment">(</span>elem<span class="comment">)</span> <span class="comment">{</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue-span">var</span> bounding <span class="symbol-span">=</span> elem<span class="comment">.</span>getBoundingClientRect<span class="comment">();</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue-span">return</span> <span class="comment">(</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bounding<span class="comment">.</span>top <span class="symbol-span">>=</span> <span class="red-code2">0</span> <span class="symbol-span">&&</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bounding<span class="comment">.</span>left <span class="symbol-span">>=</span> <span class="red-code2">0</span> <span class="symbol-span">&&</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bounding<span class="comment">.</span>bottom <span class="symbol-span"><=</span> <span class="comment">(</span><span class="blue-span">window</span><span class="comment">.</span>innerHeight <span class="symbol-span">||</span> <span class="blue-span">document</span><span class="comment">.</span>documentElement<span class="comment">.</span>clientHeight<span class="comment">)</span> <span class="symbol-span">&&</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bounding<span class="comment">.</span>right <span class="symbol-span"><=</span> <span class="comment">(</span><span class="blue-span">window</span><span class="comment">.</span>innerWidth <span class="symbol-span">||</span> <span class="blue-span">document</span><span class="comment">.</span>documentElement<span class="comment">.</span>clientWidth<span class="comment">)</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">);</span><br>
+						<span class="comment">};</span>
+					</code>
+					<p>We can pass in our element, and <code class="red-code">isInViewport()</code> will get the bounding coordinates and run our check. 
+					It returns <code class="red-code">true</code> if it’s in the viewport, and <code class="red-code">false</code> if it’s not.</p>
+					<code class="big-code">
+						<span class="blue-span">var</span> h1 <span class="symbol-span">=</span> <span class="blue-span">document</span><span class="comment">.</span>querySelector<span class="comment">(</span><span class="green-span">'h1'</span><span class="comment">);</span><br>
+						<span class="blue-span">if</span> <span class="comment">(</span>isInViewport<span class="comment">(</span>h1<span class="comment">)) {</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Do something...<br>
+						}</span>				
+					</code>
+				</section>
+				<section id="sec4">
+					<h2>Using the helper method <a href="#sec4" class="anchor">#</a></h2>
+					<p>So how would you use it?</p>
+	
+					<p>One way I’ve put this to use is in a lazy loading script. 
+					I listen for scroll events, and check if my image is in the viewport on scroll. If it is, I load it.</p>
+
+					<p>Here’s a really simplified version…</p>
+
+					<code class="big-code">&lt;figure data-image=&#34;url/to/my/image.jpg&#34;&gt;My image will go here...&lt;/figure&gt;</code>
+					<p></p>
+					<code class="big-code">
+						<span class="blue-span">var</span> image <span class="symbol-span">=</span> <span class="blue-span">document</span><span class="comment">.</span>querySelector<span class="comment">(</span><span class="green-span">'[data-image]'</span><span class="comment">);</span><br>
+						<span class="blue-span">window</span><span class="comment">.</span>addEventListener<span class="comment">(</span><span class="green-span">'scroll'</span><span class="comment">,</span> <span class="blue-span">function</span> <span class="comment">(</span>event<span class="comment">) {</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue-span">if</span> <span class="comment">(</span>isInViewport<span class="comment">(</span>image<span class="comment">)) {</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image<span class="comment">.</span>innerHTML <span class="symbol-span">=</span> <span class="green-span">&#39;&lt;img src="'</span> <span class="symbol-span">+</span> image<span class="comment">.</span>getAttribute<span class="comment">(</span><span class="green-span">'data-image'</span><span class="comment">)</span> <span class="symbol-span">+</span> <span class="green-span">&#39;&#34;&gt;&#39;</span><span class="comment">;</span><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">}<br>
+						},</span> <span class="red-code2">false</span><span class="comment">);</span>
+					</code>
+					<p>You can <a href="">grab a copy of this helper function on the Vanilla JS Toolkit</a>.</p>
+					<p class="special-p"><span class="yellow-background-span">⏰🦉 <span class="bold-span">Early Bird Sale!</span> A new session of the <a href="">Vanilla JS Academy</a> starts on May 11. Now through Tuesday, get 40% off the program.
+					<a href="">Click here to learn more.</a></span></p>
+					<p class="special-p"><span class="bold-span">Like this?</span> I send out a short email each weekday with code snippets, tools, techniques, and interesting stuff from around the web.
+					Join 8,700+ daily subscribers.</p>
+				</section>
+				<form>
+					<input type="email" placeholder="Your email address..." class="email1">
+					<button type="submit" class="button1">Get Daily Developer Tips</button>
+				</form>
+			</article>
+		</main>
+		<footer class="footer">
+			<hr class="hr1">
+			<ul class="footer-list">
+					<li><a href="">About</a></li>
+					<li><a href="">Daily Tips</a></li>
+					<li><a href="">Learn JS</a></li>
+					<li><a href="">Search</a></li>
+			</ul>
+			<p>Made with ❤️ in Massachusetts. Unless otherwise noted, all code is free to use under the <a href="">MIT License</a>. I also very irregularly share non-coding <a href="">thoughts</a>.</p>
+		</footer>
+	
+	</div>
+</body>
+</html>
